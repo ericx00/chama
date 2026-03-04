@@ -22,7 +22,7 @@ class MeetingController extends Controller
         return view('meetings.create');
     }
 
-    public function store(Request $request
+    public function store(Request $request)
     {
         $data = $request->all();
         
@@ -46,19 +46,19 @@ class MeetingController extends Controller
         return view('meetings.edit', compact('meeting'));
     }
 
-    public function update(Request $request, Meeting $meeting
+    public function update(Request $request, Meeting $meeting)
     {
         $meeting->update($request->all());
         return redirect('/meetings/' . $meeting->id);
     }
 
-    public function destroy(Meeting $meeting
+    public function destroy(Meeting $meeting)
     {
         $meeting->delete();
         return redirect('/meetings');
     }
 
-    public function markAttendance(Meeting $meeting
+    public function markAttendance(Meeting $meeting)
     {
         $members = Member::where('status', 'active')->pluck('id');
         

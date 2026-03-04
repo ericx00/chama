@@ -27,7 +27,7 @@ class RepaymentController extends Controller
         return view('repayments.create', compact('loans'));
     }
 
-    public function store(Request $request
+    public function store(Request $request)
     {
         $data = $request->all();
         
@@ -67,7 +67,7 @@ class RepaymentController extends Controller
         return view('repayments.edit', compact('repayment', 'loans'));
     }
 
-    public function update(Request $request, Repayment $repayment
+    public function update(Request $request, Repayment $repayment)
     {
         $oldAmount = $repayment->amount;
         $repayment->update($request->all());
@@ -86,7 +86,7 @@ class RepaymentController extends Controller
         return new Response('', 302, ['Location' => '/repayments/' . $repayment->id]);
     }
 
-    public function destroy(Repayment $repayment
+    public function destroy(Repayment $repayment)
     {
         $loan = $repayment->loan;
         $repayment->delete();

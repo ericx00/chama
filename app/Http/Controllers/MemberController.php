@@ -61,13 +61,13 @@ class MemberController extends Controller
         return view('members.edit', compact('member'));
     }
 
-    public function update(Request $request, Member $member
+    public function update(Request $request, Member $member)
     {
         $member->update($request->all());
         return new Response('', 302, ['Location' => '/members/' . $member->id]);
     }
 
-    public function destroy(Member $member
+    public function destroy(Member $member)
     {
         $member->delete();
         return new Response('', 302, ['Location' => '/members']);

@@ -23,7 +23,7 @@ class LoanController extends Controller
         return view('loans.create', compact('members'));
     }
 
-    public function store(Request $request
+    public function store(Request $request)
     {
         $data = $request->all();
         
@@ -49,19 +49,19 @@ class LoanController extends Controller
         return view('loans.edit', compact('loan', 'members'));
     }
 
-    public function update(Request $request, Loan $loan
+    public function update(Request $request, Loan $loan)
     {
         $loan->update($request->all());
         return new Response('', 302, ['Location' => '/loans/' . $loan->id]);
     }
 
-    public function destroy(Loan $loan
+    public function destroy(Loan $loan)
     {
         $loan->delete();
         return new Response('', 302, ['Location' => '/loans']);
     }
 
-    public function approve(Loan $loan
+    public function approve(Loan $loan)
     {
         $loan->update([
             'status' => 'approved',
@@ -71,7 +71,7 @@ class LoanController extends Controller
         return new Response('', 302, ['Location' => '/loans']);
     }
 
-    public function reject(Request $request, Loan $loan
+    public function reject(Request $request, Loan $loan)
     {
         $data = $request->all();
         $loan->update([

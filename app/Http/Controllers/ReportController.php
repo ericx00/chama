@@ -56,12 +56,16 @@ class ReportController extends Controller
         $totalContributions = Contribution::sum('amount');
         $totalLoansIssued = Loan::where('status', 'approved')->sum('amount');
         $totalOutstanding = Loan::where('status', 'approved')->sum('balance_remaining');
+        $totalLoansCount = Loan::where('status', 'approved')->count();
+        $totalOutstandingCount = Loan::where('status', 'approved')->where('balance_remaining', '>', 0)->count();
         
         $pdf = Pdf::loadView('reports.financial-pdf', [
             'totalMembers' => $totalMembers,
             'totalContributions' => $totalContributions,
             'totalLoansIssued' => $totalLoansIssued,
             'totalOutstanding' => $totalOutstanding,
+            'totalLoansCount' => $totalLoansCount,
+            'totalOutstandingCount' => $totalOutstandingCount,
         ]);
 
         return $pdf->download('financial-report.pdf');

@@ -23,7 +23,7 @@ class ContributionController extends Controller
         return view('contributions.create', compact('members'));
     }
 
-    public function store(Request $request
+    public function store(Request $request)
     {
         $data = $request->all();
         
