@@ -3,10 +3,12 @@
 @section('content')
 <div class="p-8">
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-3xl font-bold text-gray-800">Contributions Management</h2>
-        <a href="/contributions/create" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-            <i class="fas fa-plus"></i> Record Contribution
-        </a>
+        <h2 class="text-3xl font-bold text-gray-800">Contributions</h2>
+        @if(Auth::user()->isAdmin())
+            <a href="/contributions/create" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                <i class="fas fa-plus"></i> Record Contribution
+            </a>
+        @endif
     </div>
 
     <!-- Contributions Table -->
@@ -30,7 +32,9 @@
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $contribution->date }}</td>
                         <td class="px-6 py-4 text-sm space-x-3">
                             <a href="/contributions/{{ $contribution->id }}" class="text-blue-600 hover:text-blue-800">View</a>
-                            <a href="/contributions/{{ $contribution->id }}/edit" class="text-blue-600 hover:text-blue-800">Edit</a>
+                            @if(Auth::user()->isAdmin())
+                                <a href="/contributions/{{ $contribution->id }}/edit" class="text-blue-600 hover:text-blue-800">Edit</a>
+                            @endif
                         </td>
                     </tr>
                 @empty

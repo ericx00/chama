@@ -41,7 +41,9 @@
                         </td>
                         <td class="px-6 py-4 text-sm space-x-3">
                             <a href="/loans/{{ $loan->id }}" class="text-blue-600 hover:text-blue-800">View</a>
-                            <a href="/loans/{{ $loan->id }}/edit" class="text-blue-600 hover:text-blue-800">Edit</a>
+                            @if(Auth::user()->isAdmin())
+                                <a href="/loans/{{ $loan->id }}/edit" class="text-blue-600 hover:text-blue-800">Edit</a>
+                            @endif
                         </td>
                     </tr>
                 @empty

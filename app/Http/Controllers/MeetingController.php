@@ -20,11 +20,13 @@ class MeetingController extends Controller
 
     public function create(): View
     {
+        $this->authorizeAdmin();
         return view('meetings.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
+        $this->authorizeAdmin();
         $data = $this->validatedData($request);
 
         $data['created_by'] = Auth::id();
@@ -45,11 +47,13 @@ class MeetingController extends Controller
 
     public function edit(Meeting $meeting): View
     {
+        $this->authorizeAdmin();
         return view('meetings.edit', compact('meeting'));
     }
 
     public function update(Request $request, Meeting $meeting): RedirectResponse
     {
+        $this->authorizeAdmin();
         $data = $this->validatedData($request);
 
         $meeting->update($data);
@@ -60,6 +64,7 @@ class MeetingController extends Controller
 
     public function destroy(Meeting $meeting): RedirectResponse
     {
+        $this->authorizeAdmin();
         $meeting->delete();
 
         return redirect()->route('meetings.index')
@@ -68,6 +73,7 @@ class MeetingController extends Controller
 
     public function markAttendance(Meeting $meeting): RedirectResponse
     {
+        $this->authorizeAdmin();
         $members = Member::where('status', 'active')->pluck('id');
 
         foreach ($members as $memberId) {
@@ -83,7 +89,7 @@ class MeetingController extends Controller
         return $request->validate([
             'title'          => ['required', 'string', 'max:200'],
             'description'    => ['nullable', 'string', 'max:1000'],
-            'scheduled_date' => ['required', 'date'],
+            'scheduled_date' => ['required', 'date', 'after_or_equal:today'],
             'location'       => ['nullable', 'string', 'max:200'],
             'minutes'        => ['nullable', 'string'],
             'status'         => ['nullable', 'in:scheduled,completed,cancelled'],

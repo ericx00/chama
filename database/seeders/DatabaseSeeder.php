@@ -20,6 +20,26 @@ class DatabaseSeeder extends Seeder
             'phone' => '0700000001',
         ]);
 
+        // Create Member User (documented demo credentials)
+        $demoMember = Member::create([
+            'name' => 'Demo Member',
+            'phone' => '0700000002',
+            'id_number' => 'DEMO001',
+            'email' => 'member@chama.local',
+            'address' => 'Nairobi, Kenya',
+            'date_joined' => now(),
+            'status' => 'active',
+        ]);
+
+        User::create([
+            'name' => 'Demo Member',
+            'email' => 'member@chama.local',
+            'password' => Hash::make('password'),
+            'role' => 'member',
+            'phone' => '0700000002',
+            'member_id' => $demoMember->id,
+        ]);
+
         // Create Sample Members
         $members = [
             ['name' => 'John Kiprotich', 'phone' => '0712345678', 'id_number' => '25498634', 'email' => 'john@example.com'],

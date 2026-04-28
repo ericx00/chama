@@ -3,10 +3,12 @@
 @section('content')
 <div class="p-8">
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-3xl font-bold text-gray-800">Members Management</h2>
-        <a href="/members/create" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-            <i class="fas fa-plus"></i> Add New Member
-        </a>
+        <h2 class="text-3xl font-bold text-gray-800">Members</h2>
+        @if(Auth::user()->isAdmin())
+            <a href="/members/create" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                <i class="fas fa-plus"></i> Add New Member
+            </a>
+        @endif
     </div>
 
     <!-- Members Table -->
@@ -37,7 +39,11 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 text-sm space-x-3">
-                            <a href="/members/{{ $member->id }}/edit" class="text-blue-600 hover:text-blue-800">Edit</a>
+                            @if(Auth::user()->isAdmin())
+                                <a href="/members/{{ $member->id }}/edit" class="text-blue-600 hover:text-blue-800">Edit</a>
+                            @else
+                                <span class="text-gray-400">-</span>
+                            @endif
                         </td>
                     </tr>
                 @empty

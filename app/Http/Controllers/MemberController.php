@@ -28,11 +28,13 @@ class MemberController extends Controller
 
     public function create(): View
     {
+        $this->authorizeAdmin();
         return view('members.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
+        $this->authorizeAdmin();
         $data = $this->validatedData($request);
 
         Member::create($data);
@@ -52,11 +54,13 @@ class MemberController extends Controller
 
     public function edit(Member $member): View
     {
+        $this->authorizeAdmin();
         return view('members.edit', compact('member'));
     }
 
     public function update(Request $request, Member $member): RedirectResponse
     {
+        $this->authorizeAdmin();
         $data = $this->validatedData($request, $member);
 
         $member->update($data);
@@ -67,6 +71,7 @@ class MemberController extends Controller
 
     public function destroy(Member $member): RedirectResponse
     {
+        $this->authorizeAdmin();
         $member->delete();
 
         return redirect()->route('members.index')
@@ -90,7 +95,7 @@ class MemberController extends Controller
             'last_name'  => ['nullable', 'string', 'max:100'],
             'name'       => ['nullable', 'string', 'max:200'],
             'phone'      => ['required', 'string', 'max:20'],
-            'id_number'  => [$idRule],
+            'id_number'  => $idRule,
             'email'      => ['nullable', 'email', 'max:150'],
             'address'    => ['nullable', 'string', 'max:500'],
             'status'     => ['nullable', 'in:active,inactive,suspended'],

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contribution;
 use App\Models\Loan;
 use App\Models\Member;
+use App\Models\Repayment;
 use Illuminate\View\View;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -12,7 +13,19 @@ class ReportController extends Controller
 {
     public function index(): View
     {
-        return view('reports.index');
+        $totalMembers = Member::count();
+        $totalContributions = Contribution::sum('amount');
+        $totalLoansIssued = Loan::where('status', 'approved')->sum('amount');
+        $totalOutstanding = Loan::where('status', 'approved')->sum('balance_remaining');
+        $totalRepayments = Repayment::sum('amount');
+
+        return view('reports.index', compact(
+            'totalMembers',
+            'totalContributions',
+            'totalLoansIssued',
+            'totalOutstanding',
+            'totalRepayments'
+        ));
     }
 
     public function contributionsPdf()

@@ -45,22 +45,26 @@
     <!-- Quick Stats -->
     <div class="mt-12">
         <h3 class="text-2xl font-semibold text-gray-800 mb-6">Quick Statistics</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div class="bg-blue-50 p-4 rounded-lg">
                 <p class="text-gray-600 text-sm">Total Members</p>
-                <p class="text-3xl font-bold text-blue-600">-</p>
+                <p class="text-3xl font-bold text-blue-600">{{ number_format($totalMembers) }}</p>
             </div>
             <div class="bg-green-50 p-4 rounded-lg">
                 <p class="text-gray-600 text-sm">Total Contributions</p>
-                <p class="text-3xl font-bold text-green-600">-</p>
+                <p class="text-3xl font-bold text-green-600">KES {{ number_format($totalContributions, 2) }}</p>
             </div>
             <div class="bg-purple-50 p-4 rounded-lg">
                 <p class="text-gray-600 text-sm">Total Loans Issued</p>
-                <p class="text-3xl font-bold text-purple-600">-</p>
+                <p class="text-3xl font-bold text-purple-600">KES {{ number_format($totalLoansIssued, 2) }}</p>
             </div>
             <div class="bg-red-50 p-4 rounded-lg">
                 <p class="text-gray-600 text-sm">Outstanding Amount</p>
-                <p class="text-3xl font-bold text-red-600">-</p>
+                <p class="text-3xl font-bold text-red-600">KES {{ number_format($totalOutstanding, 2) }}</p>
+            </div>
+            <div class="bg-teal-50 p-4 rounded-lg">
+                <p class="text-gray-600 text-sm">Total Repayments</p>
+                <p class="text-3xl font-bold text-teal-600">KES {{ number_format($totalRepayments, 2) }}</p>
             </div>
         </div>
     </div>

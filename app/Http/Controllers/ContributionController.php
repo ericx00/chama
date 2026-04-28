@@ -20,6 +20,7 @@ class ContributionController extends Controller
 
     public function create(): View
     {
+        $this->authorizeAdmin();
         $members = Member::where('status', 'active')->orderBy('name')->get();
 
         return view('contributions.create', compact('members'));
@@ -27,10 +28,11 @@ class ContributionController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $this->authorizeAdmin();
         $data = $request->validate([
             'member_id' => ['required', 'exists:members,id'],
             'amount'    => ['required', 'numeric', 'min:0.01'],
-            'date'      => ['required', 'date'],
+            'date'      => ['required', 'date', 'before_or_equal:today'],
             'notes'     => ['nullable', 'string', 'max:500'],
         ]);
 

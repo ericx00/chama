@@ -4,9 +4,11 @@
 <div class="p-8">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-3xl font-bold text-gray-800">Meetings</h2>
-        <a href="{{ route('meetings.create') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-            <i class="fas fa-plus"></i> Schedule Meeting
-        </a>
+        @if(Auth::user()->isAdmin())
+            <a href="{{ route('meetings.create') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                <i class="fas fa-plus"></i> Schedule Meeting
+            </a>
+        @endif
     </div>
 
     <!-- Meetings Table -->
@@ -40,9 +42,11 @@
                             <a href="{{ route('meetings.show', $meeting) }}" class="text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a href="{{ route('meetings.edit', $meeting) }}" class="text-yellow-600 hover:text-yellow-800">
-                                <i class="fas fa-edit"></i>
-                            </a>
+                            @if(Auth::user()->isAdmin())
+                                <a href="{{ route('meetings.edit', $meeting) }}" class="text-yellow-600 hover:text-yellow-800">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            @endif
                         </td>
                     </tr>
                 @empty
