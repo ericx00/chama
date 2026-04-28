@@ -150,8 +150,8 @@
         </div>
 
         <div class="button-group">
-            <button class="btn-primary" onclick="goToDashboard()">Go to Dashboard</button>
-            <button class="btn-secondary" onclick="viewApiDocs()">API Documentation</button>
+            <a class="btn-primary" style="text-decoration:none;display:inline-block;" href="{{ route('login') }}">Sign In</a>
+            <a class="btn-secondary" style="text-decoration:none;display:inline-block;" href="https://github.com/ericx00/chama" target="_blank" rel="noopener">View on GitHub</a>
         </div>
 
         <div class="version">
@@ -160,20 +160,5 @@
             <strong>Version:</strong> 1.0.0
         </div>
     </div>
-
-    <script>
-        function goToDashboard() {
-            window.location.href = '/dashboard';
-        }
-        function viewApiDocs() {
-            alert('API Documentation:\n\n' +
-                'GET /api/members - List all members\n' +
-                'POST /api/members - Create new member\n' +
-                'GET /api/contributions - View contributions\n' +
-                'GET /api/loans - View loans\n' +
-                'GET /api/meetings - View meetings\n\n' +
-                'Full documentation available at /api/docs');
-        }
-    </script>
 </body>
 </html>
