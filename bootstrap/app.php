@@ -19,10 +19,5 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
-// Register service providers
-$app->register(Illuminate\Session\SessionServiceProvider::class);
-$app->register(App\Providers\RouteServiceProvider::class);
-$app->register(App\Providers\AppServiceProvider::class);
-
 return $app;
 

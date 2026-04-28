@@ -7,19 +7,14 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
     }
 
-    protected function commands()
+    protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');
-
-        // Explicitly register migration commands
-        if (class_exists('Illuminate\Database\Console\Migrations\MigrationRepositoryTable')) {
-            $this->load(__DIR__.'/../../../vendor/laravel/framework/src/Illuminate/Database/Console/Migrations');
-        }
 
         require base_path('routes/console.php');
     }
