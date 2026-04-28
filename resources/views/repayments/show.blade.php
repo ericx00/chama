@@ -69,7 +69,7 @@
                     </a>
                     
                     <form action="/repayments/{{ $repayment->id }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                        <input type="hidden" name="_token" value="csrf-token">
+                        @csrf
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
                             Delete Repayment

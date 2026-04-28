@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Repayment;
 use App\Models\Loan;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\View\View;
+use App\Models\Repayment;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class RepaymentController extends Controller
 {
     public function index(): View
     {
         $repayments = Repayment::with(['loan', 'member'])->latest()->paginate(20);
+
         return view('repayments.index', compact('repayments'));
     }
 
@@ -22,34 +22,30 @@ class RepaymentController extends Controller
         $loans = Loan::where('status', 'approved')
             ->where('balance_remaining', '>', 0)
             ->with('member')
+            ->orderByDesc('id')
             ->get();
 
         return view('repayments.create', compact('loans'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $data = $request->all();
-        
-        // Remove _token from data
-        unset($data['_token']);
-        
-        $loan = Loan::find($data['loan_id']);
+        $data = $request->validate([
+            'loan_id' => ['required', 'exists:loans,id'],
+            'amount'  => ['required', 'numeric', 'min:0.01'],
+            'date'    => ['required', 'date'],
+            'notes'   => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $loan = Loan::findOrFail($data['loan_id']);
         $data['member_id'] = $loan->member_id;
 
         Repayment::create($data);
 
-        // Update loan balance
-        $totalRepaid = $loan->repayments()->sum('amount');
-        $newBalance = $loan->amount - $totalRepaid;
+        $this->recomputeLoanBalance($loan);
 
-        if ($newBalance <= 0) {
-            $loan->update(['status' => 'fully_repaid', 'balance_remaining' => 0]);
-        } else {
-            $loan->update(['balance_remaining' => $newBalance]);
-        }
-
-        return new Response('', 302, ['Location' => '/repayments']);
+        return redirect()->route('repayments.index')
+            ->with('status', 'Repayment recorded successfully.');
     }
 
     public function show(Repayment $repayment): View
@@ -67,46 +63,36 @@ class RepaymentController extends Controller
         return view('repayments.edit', compact('repayment', 'loans'));
     }
 
-    public function update(Request $request, Repayment $repayment)
+    public function update(Request $request, Repayment $repayment): RedirectResponse
     {
-        $oldAmount = $repayment->amount;
-        $repayment->update($request->all());
+        $data = $request->validate([
+            'amount' => ['required', 'numeric', 'min:0.01'],
+            'date'   => ['required', 'date'],
+            'notes'  => ['nullable', 'string', 'max:500'],
+        ]);
 
-        // Recalculate loan balance
-        $loan = $repayment->loan;
-        $totalRepaid = $loan->repayments()->sum('amount');
-        $newBalance = $loan->amount - $totalRepaid;
+        $repayment->update($data);
 
-        if ($newBalance <= 0) {
-            $loan->update(['status' => 'fully_repaid', 'balance_remaining' => 0]);
-        } else {
-            $loan->update(['balance_remaining' => $newBalance]);
-        }
+        $this->recomputeLoanBalance($repayment->loan);
 
-        return new Response('', 302, ['Location' => '/repayments/' . $repayment->id]);
+        return redirect()->route('repayments.show', $repayment)
+            ->with('status', 'Repayment updated.');
     }
 
-    public function destroy(Repayment $repayment)
+    public function destroy(Repayment $repayment): RedirectResponse
     {
         $loan = $repayment->loan;
         $repayment->delete();
 
-        // Recalculate loan balance after deletion
-        $totalRepaid = $loan->repayments()->sum('amount');
-        $newBalance = $loan->amount - $totalRepaid;
+        $this->recomputeLoanBalance($loan);
 
-        if ($newBalance <= 0) {
-            $loan->update(['status' => 'fully_repaid', 'balance_remaining' => 0]);
-        } else {
-            $loan->update(['balance_remaining' => $newBalance]);
-        }
-
-        return new Response('', 302, ['Location' => '/repayments']);
+        return redirect()->route('repayments.index')
+            ->with('status', 'Repayment removed.');
     }
 
     public function loanRepayments(Loan $loan): View
     {
-        $repayments = $loan->repayments()->latest()->paginate(10);
+        $repayments  = $loan->repayments()->latest()->paginate(10);
         $totalRepaid = $repayments->sum('amount');
 
         return view('repayments.loan-history', compact('loan', 'repayments', 'totalRepaid'));
@@ -122,5 +108,23 @@ class RepaymentController extends Controller
             ->paginate(15);
 
         return view('repayments.overdue', compact('loans'));
+    }
+
+    /**
+     * Recompute the loan's outstanding balance and transition its status when
+     * fully repaid (or revert to `approved` if a deletion re-opens it).
+     */
+    private function recomputeLoanBalance(Loan $loan): void
+    {
+        $totalRepaid = $loan->repayments()->sum('amount');
+        $newBalance  = max(0, $loan->amount - $totalRepaid);
+
+        $status = $newBalance == 0 ? 'fully_repaid'
+            : ($loan->status === 'fully_repaid' ? 'approved' : $loan->status);
+
+        $loan->update([
+            'status'            => $status,
+            'balance_remaining' => $newBalance,
+        ]);
     }
 }

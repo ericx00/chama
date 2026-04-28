@@ -5,7 +5,7 @@
     <h2 class="text-3xl font-bold text-gray-800 mb-6">Add New Member</h2>
 
     <form action="/members" method="POST" class="bg-white rounded-lg shadow-md p-6">
-        <input type="hidden" name="_token" value="csrf-token">
+        @csrf
 
         <div class="mb-4">
             <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>

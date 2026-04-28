@@ -96,14 +96,14 @@
 
                     @if($loan->status == 'pending')
                         <form action="/loans/{{ $loan->id }}/approve" method="POST">
-                            <input type="hidden" name="_token" value="csrf-token">
+                            @csrf
                             <button type="submit" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
                                 Approve Loan
                             </button>
                         </form>
                         
                         <form action="/loans/{{ $loan->id }}/reject" method="POST">
-                            <input type="hidden" name="_token" value="csrf-token">
+                            @csrf
                             <input type="hidden" name="notes" value="">
                             <button type="submit" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
                                 Reject Loan
@@ -112,7 +112,7 @@
                     @endif
                     
                     <form action="/loans/{{ $loan->id }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                        <input type="hidden" name="_token" value="csrf-token">
+                        @csrf
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
                             Delete Loan

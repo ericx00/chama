@@ -4,38 +4,44 @@ namespace App\Http\Controllers;
 
 use App\Models\Contribution;
 use App\Models\Member;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\View\View;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ContributionController extends Controller
 {
     public function index(): View
     {
         $contributions = Contribution::with('member')->latest()->paginate(20);
+
         return view('contributions.index', compact('contributions'));
     }
 
     public function create(): View
     {
-        $members = Member::where('status', 'active')->get();
+        $members = Member::where('status', 'active')->orderBy('name')->get();
+
         return view('contributions.create', compact('members'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $data = $request->all();
-        
-        // Remove _token from data
-        unset($data['_token']);
-        
-        $date = \Carbon\Carbon::parse($data['date']);
+        $data = $request->validate([
+            'member_id' => ['required', 'exists:members,id'],
+            'amount'    => ['required', 'numeric', 'min:0.01'],
+            'date'      => ['required', 'date'],
+            'notes'     => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $date = Carbon::parse($data['date']);
         $data['month'] = $date->month;
-        $data['year'] = $date->year;
+        $data['year']  = $date->year;
 
         Contribution::create($data);
-        return new Response('', 302, ['Location' => '/contributions']);
+
+        return redirect()->route('contributions.index')
+            ->with('status', 'Contribution recorded successfully.');
     }
 
     public function show(Contribution $contribution): View
@@ -46,7 +52,7 @@ class ContributionController extends Controller
     public function monthlyReport(): View
     {
         $currentMonth = now()->month;
-        $currentYear = now()->year;
+        $currentYear  = now()->year;
 
         $monthlySummary = Contribution::whereMonth('date', $currentMonth)
             ->whereYear('date', $currentYear)
@@ -63,7 +69,7 @@ class ContributionController extends Controller
 
     public function memberContributions(Member $member): View
     {
-        $contributions = $member->contributions()->latest()->paginate(15);
+        $contributions      = $member->contributions()->latest()->paginate(15);
         $totalContributions = $member->contributions()->sum('amount');
 
         return view('contributions.member-history', compact('member', 'contributions', 'totalContributions'));

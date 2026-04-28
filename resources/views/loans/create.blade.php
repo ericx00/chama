@@ -5,7 +5,7 @@
     <h2 class="text-3xl font-bold text-gray-800 mb-6">Request Loan</h2>
 
     <form action="/loans" method="POST" class="bg-white rounded-lg shadow-md p-6">
-        <input type="hidden" name="_token" value="csrf-token">
+        @csrf
 
         <div class="mb-4">
             <label for="member_id" class="block text-sm font-semibold text-gray-700 mb-2">Member *</label>

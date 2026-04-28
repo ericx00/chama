@@ -6,7 +6,7 @@
 
     <div class="bg-white rounded-lg shadow-md p-6">
         <form action="/members/{{ $member->id }}" method="POST">
-            <input type="hidden" name="_token" value="csrf-token">
+            @csrf
             <input type="hidden" name="_method" value="PUT">
             
             <div class="mb-4">

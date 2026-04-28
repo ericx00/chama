@@ -112,7 +112,7 @@
                     </a>
                     
                     <form action="/members/{{ $member->id }}" method="POST" style="display:inline;">
-                        <input type="hidden" name="_token" value="csrf-token">
+                        @csrf
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" onclick="return confirm('Are you sure?')" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
                             Delete Member

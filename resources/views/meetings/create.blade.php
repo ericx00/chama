@@ -6,7 +6,7 @@
 
     <div class="bg-white rounded-lg shadow-md p-6">
         <form action="/meetings" method="POST">
-            <input type="hidden" name="_token" value="csrf-token">
+            @csrf
             
             <div class="mb-6">
                 <label class="block text-gray-700 font-semibold mb-2">Meeting Title</label>
